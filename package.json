@@ -1,0 +1,30 @@
+{
+    "name": "pdfjs-viewer",
+    "version": "2.0.186",
+    "description": "Compiled version of pdf.js",
+    "main": "pdf.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Nadeermalangadan/pdf.js.git"
+    },
+    "keywords": [
+        "pdf"
+    ],
+    "author": "",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/Nadeermalangadan/pdf.js/issues"
+    },
+    "homepage": "https://github.com/Nadeermalangadan/pdf.js#readme",
+    "devDependencies": {
+        "css-prefix": "git+https://github.com/moesjarraf/css-prefix.git#0.0.2+moesjarraf.3",
+        "grunt": "^0.4.5",
+        "grunt-css-prefix": "^0.2.3"
+    },
+    "dependencies": {
+        "uglifycss": "0.0.25"
+    }
+}
