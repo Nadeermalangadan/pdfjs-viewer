@@ -3290,7 +3290,7 @@ function _fetchDocument(worker, source, pdfDataRangeTransport, docId) {
   if (worker.destroyed) {
     return Promise.reject(new Error('Worker was destroyed'));
   }
-  var apiVersion = '2.0.186';
+  var apiVersion = '2.0.198';
   source.disableRange = (0, _dom_utils.getDefaultSetting)('disableRange');
   source.disableAutoFetch = (0, _dom_utils.getDefaultSetting)('disableAutoFetch');
   source.disableStream = (0, _dom_utils.getDefaultSetting)('disableStream');
@@ -4651,8 +4651,8 @@ var InternalRenderTask = function InternalRenderTaskClosure() {
 }();
 var version, build;
 {
-  exports.version = version = '2.0.186';
-  exports.build = build = 'd9254023';
+  exports.version = version = '2.0.198';
+  exports.build = build = 'ccd2f526';
 }
 exports.getDocument = getDocument;
 exports.LoopbackPort = LoopbackPort;
@@ -6199,7 +6199,6 @@ var renderTextLayer = function renderTextLayerClosure() {
     _processItems: function _processItems(items, styleCache) {
       for (var i = 0, len = items.length; i < len; i++) {
         this._textContentItemsStr.push(items[i].str);
-        console.log(items[i].str.charCodeAt());
         appendText(this, items[i], styleCache);
       }
     },
@@ -7384,8 +7383,8 @@ exports.SVGGraphics = SVGGraphics;
 "use strict";
 
 
-var pdfjsVersion = '2.0.186';
-var pdfjsBuild = 'd9254023';
+var pdfjsVersion = '2.0.198';
+var pdfjsBuild = 'ccd2f526';
 var pdfjsSharedUtil = __w_pdfjs_require__(0);
 var pdfjsDisplayGlobal = __w_pdfjs_require__(112);
 var pdfjsDisplayAPI = __w_pdfjs_require__(57);
@@ -12714,8 +12713,8 @@ if (!_global_scope2.default.PDFJS) {
 }
 var PDFJS = _global_scope2.default.PDFJS;
 {
-  PDFJS.version = '2.0.186';
-  PDFJS.build = 'd9254023';
+  PDFJS.version = '2.0.198';
+  PDFJS.build = 'ccd2f526';
 }
 PDFJS.pdfBug = false;
 if (PDFJS.verbosity !== undefined) {
@@ -18168,8 +18167,21 @@ var EventBus = function () {
         return;
       }
       var args = Array.prototype.slice.call(arguments, 1);
-      if (eventListeners.length > 2 && (eventName === 'nextpage' || eventName === 'previouspage' || eventName === 'rotatecw' || eventName === 'rotateccw' || eventName === 'find')) {
-        eventListeners = [eventListeners[0], eventListeners[1]];
+      if (eventListeners.length && (eventName === 'nextpage' || eventName === 'previouspage' || eventName === 'rotatecw' || eventName === 'rotateccw' || eventName === 'find')) {
+        var evtList = [];
+        for (var j = 0; j < eventListeners.length; ++j) {
+          var needToAdd = true;
+          for (var i = 0; i < evtList.length; ++i) {
+            if (evtList[i] === eventListeners[j]) {
+              needToAdd = false;
+              break;
+            }
+          }
+          if (needToAdd) {
+            evtList.push(eventListeners[j]);
+          }
+        }
+        eventListeners = evtList;
       }
       eventListeners.slice(0).forEach(function (listener) {
         listener.apply(null, args);
@@ -19049,7 +19061,6 @@ var PDFViewerApplication = {
     if (this.isViewerEmbedded) {
       return;
     }
-    document.title = title;
   },
   close: function close() {
     var errorWrapper = this.appConfig.errorWrapper.container;
@@ -20120,8 +20131,6 @@ function webViewerKeyDown(evt) {
   if (cmd === 1 || cmd === 8) {
     switch (evt.keyCode) {
       case 83:
-        PDFViewerApplication.download();
-        handled = true;
         break;
     }
   }
@@ -20165,10 +20174,6 @@ function webViewerKeyDown(evt) {
         }
       case 75:
       case 80:
-        if (PDFViewerApplication.page > 1) {
-          PDFViewerApplication.page--;
-        }
-        handled = true;
         break;
       case 27:
         if (PDFViewerApplication.secondaryToolbar.isOpen) {
@@ -20192,10 +20197,6 @@ function webViewerKeyDown(evt) {
         }
       case 74:
       case 78:
-        if (PDFViewerApplication.page < PDFViewerApplication.pagesCount) {
-          PDFViewerApplication.page++;
-        }
-        handled = true;
         break;
       case 36:
         if (isViewerInPresentationMode || PDFViewerApplication.page > 1) {
@@ -20212,13 +20213,10 @@ function webViewerKeyDown(evt) {
         }
         break;
       case 83:
-        PDFViewerApplication.pdfCursorTools.switchTool(_pdf_cursor_tools.CursorTool.SELECT);
         break;
       case 72:
-        PDFViewerApplication.pdfCursorTools.switchTool(_pdf_cursor_tools.CursorTool.HAND);
         break;
       case 82:
-        PDFViewerApplication.rotatePages(90);
         break;
     }
   }
@@ -20234,7 +20232,6 @@ function webViewerKeyDown(evt) {
         handled = true;
         break;
       case 82:
-        PDFViewerApplication.rotatePages(-90);
         break;
     }
   }
@@ -23836,6 +23833,9 @@ var PDFSidebarResizer = function () {
       _boundEvents.mouseMove = this._mouseMove.bind(this);
       _boundEvents.mouseUp = this._mouseUp.bind(this);
       this.resizer.addEventListener('mousedown', function (evt) {
+        if (evt.button !== 0) {
+          return;
+        }
         _this2.outerContainer.classList.add(SIDEBAR_RESIZING_CLASS);
         window.addEventListener('mousemove', _boundEvents.mouseMove);
         window.addEventListener('mouseup', _boundEvents.mouseUp);
